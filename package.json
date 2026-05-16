@@ -1,0 +1,10 @@
+{
+  "name": "ieiras-impact",
+  "private": true,
+  "version": "1.0.0",
+  "description": "IEIRAS environmental intelligence dashboard",
+  "scripts": {
+    "start": "streamlit run app.py",
+    "start:prod": "streamlit run app.py --server.port 8501 --server.address 0.0.0.0"
+  }
+}

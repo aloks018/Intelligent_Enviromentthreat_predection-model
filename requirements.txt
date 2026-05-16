@@ -1,0 +1,11 @@
+streamlit==1.54.0
+numpy>=1.26,<3
+pandas>=2.2,<3
+joblib>=1.4,<2
+scikit-learn>=1.5,<2
+folium>=0.17,<1
+streamlit-folium>=0.25,<1
+requests>=2.32,<3
+gTTS>=2.5,<3
+openai>=1.82,<2
+reportlab>=4.2,<5
