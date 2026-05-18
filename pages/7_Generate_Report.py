@@ -28,7 +28,7 @@ render_hero(
     title="Environmental Impact Report",
     summary=(
         "Generate a downloadable PDF report with system metadata, model context, "
-        "risk summary, and project information for review or presentation."
+        "risk summary, business impact context, and project information for review or presentation."
     ),
     image="https://images.unsplash.com/photo-1486825586573-7131f7991bdd?auto=format&fit=crop&w=2400&q=90",
     kicker="PDF generation",
@@ -49,7 +49,7 @@ report_title = st.text_input("Report title", "IEIRAS Environmental Intelligence 
 author = st.text_input("Prepared by", "Alok Singh")
 summary = st.text_area(
     "Summary",
-    "IEIRAS integrates AQI prediction, map intelligence, forecasting, analytics, safety guidance, ocean risk, and water pollution AI.",
+    "IEIRAS integrates AQI prediction, map intelligence, forecasting, business impact scoring, ocean risk, and water pollution AI.",
 )
 
 if st.button("Generate Report"):

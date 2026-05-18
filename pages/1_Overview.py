@@ -28,7 +28,7 @@ render_hero(
     title="Project Overview and System Purpose",
     summary=(
         "IEIRAS is a unified environmental intelligence platform for AQI prediction, "
-        "risk mapping, rainfall forecasting, explainable analytics, report generation, "
+        "risk mapping, rainfall forecasting, business impact scoring, report generation, "
         "ocean awareness, and river water pollution prediction."
     ),
     image="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=2400&q=90",
@@ -78,9 +78,9 @@ with cols[1]:
     )
 with cols[2]:
     render_text_card(
-        "Explainability",
-        "Review feature influence and safety guidance so model outputs are easier to trust and present.",
-        "Trust",
+        "Business intelligence",
+        "Estimate location-level business impact, site suitability, and operational continuity from environmental conditions.",
+        "Business",
     )
 
 render_section(

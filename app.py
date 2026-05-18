@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 
 from natgeo_theme import (
+    render_cta_links,
     inject_natgeo_theme,
     render_footer,
     render_metric_card,
@@ -28,19 +29,19 @@ st.markdown(
     <style>
     .ie-dashboard-shell {
         background:
-            linear-gradient(135deg, rgba(8, 43, 31, 0.92), rgba(8, 94, 111, 0.82)),
+            linear-gradient(135deg, rgba(8, 43, 31, 0.92), rgba(8, 94, 111, 0.78)),
             url("https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=2400&q=90");
         background-position: center;
         background-size: cover;
-        border: 1px solid var(--ie-line);
+        border: 1px solid rgba(255, 255, 255, 0.18);
         border-radius: 8px;
-        box-shadow: 0 24px 52px rgba(15, 81, 50, 0.16);
+        box-shadow: var(--ie-shadow-strong);
         overflow: hidden;
-        padding: 1.15rem;
+        padding: 1.35rem;
     }
 
     .ie-dashboard-head {
-        align-items: center;
+        align-items: end;
         color: #ffffff;
         display: flex;
         gap: 1rem;
@@ -59,36 +60,70 @@ st.markdown(
 
     .ie-dashboard-title {
         color: #ffffff;
-        font-size: 2.35rem;
+        font-size: 2.8rem;
         font-weight: 900;
-        line-height: 1.06;
+        line-height: 1.03;
         margin: 0.45rem 0 0 0;
-        max-width: 700px;
+        max-width: 760px;
     }
 
     .ie-dashboard-summary {
         color: rgba(255, 255, 255, 0.92);
-        font-size: 0.95rem;
-        line-height: 1.7;
+        font-size: 1rem;
+        line-height: 1.76;
         margin: 0.55rem 0 0 0;
         max-width: 720px;
     }
 
-    .ie-dashboard-tags {
+    .ie-dashboard-actions {
         display: flex;
         flex-wrap: wrap;
+        gap: 0.65rem;
+        margin-top: 1.15rem;
+    }
+
+    .ie-dashboard-action {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 999px;
+        color: #ffffff;
+        display: inline-flex;
+        font-size: 0.8rem;
+        font-weight: 800;
+        padding: 0.72rem 0.95rem;
+        text-decoration: none;
+        text-transform: uppercase;
+    }
+
+    .ie-dashboard-tags {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
         gap: 0.55rem;
-        justify-content: flex-end;
+        min-width: 230px;
     }
 
     .ie-dashboard-tag {
         background: rgba(255, 255, 255, 0.12);
-        border: 1px solid rgba(255, 255, 255, 0.22);
-        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 8px;
         color: #ffffff;
-        font-size: 0.76rem;
+        padding: 0.82rem 0.9rem;
+    }
+
+    .ie-dashboard-tag strong {
+        display: block;
+        font-size: 1.15rem;
         font-weight: 900;
-        padding: 0.58rem 0.8rem;
+        margin-top: 0.22rem;
+    }
+
+    .ie-dashboard-tag span {
+        color: rgba(255, 255, 255, 0.8);
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
     }
 
@@ -99,12 +134,11 @@ st.markdown(
         }
 
         .ie-dashboard-tags {
-            justify-content: flex-start;
             margin-top: 0.9rem;
         }
 
         .ie-dashboard-title {
-            font-size: 2rem;
+            font-size: 2.2rem;
         }
     }
     </style>
@@ -120,15 +154,20 @@ st.markdown(
                 <div class="ie-dashboard-kicker">AI environmental command center</div>
                 <div class="ie-dashboard-title">AI Environmental Intelligence Platform</div>
                 <p class="ie-dashboard-summary">
-                    One premium dashboard for AQI prediction, rainfall analytics, water pollution monitoring,
-                    geospatial intelligence, and climate risk awareness.
+                    A connected environmental intelligence suite for AQI prediction, geospatial risk mapping,
+                    rainfall forecasting, business impact scoring, water analytics, and decision-ready reporting.
                 </p>
+                <div class="ie-dashboard-actions">
+                    <a class="ie-dashboard-action" href="/AI_Prediction" target="_self">Predict AQI</a>
+                    <a class="ie-dashboard-action" href="/Map_AI_Prediction" target="_self">Open Map</a>
+                    <a class="ie-dashboard-action" href="/Business_Impact" target="_self">Business AI</a>
+                </div>
             </div>
             <div class="ie-dashboard-tags">
-                <div class="ie-dashboard-tag">AQI</div>
-                <div class="ie-dashboard-tag">Forecast</div>
-                <div class="ie-dashboard-tag">Water</div>
-                <div class="ie-dashboard-tag">Maps</div>
+                <div class="ie-dashboard-tag"><span>Model accuracy</span><strong>96.4%</strong></div>
+                <div class="ie-dashboard-tag"><span>Live sensors</span><strong>1,260</strong></div>
+                <div class="ie-dashboard-tag"><span>Forecast range</span><strong>120 hours</strong></div>
+                <div class="ie-dashboard-tag"><span>Active alerts</span><strong>18 regions</strong></div>
             </div>
         </div>
     </section>
@@ -137,6 +176,7 @@ st.markdown(
 )
 
 render_status("Single dashboard active. Extra homepage dashboard sections removed.")
+render_cta_links()
 
 trend_data = pd.DataFrame(
     {
@@ -170,7 +210,7 @@ with main_col:
 
     render_panel(
         "Unified environmental analytics",
-        "Track air-quality signals, water-system health, and forecast confidence inside one balanced dashboard view.",
+        "Track air-quality signals, water-system health, and forecast confidence inside one connected dashboard built for planners, researchers, and business teams.",
     )
     st.line_chart(trend_data.set_index("Month"), height=360, use_container_width=True)
 
@@ -214,7 +254,7 @@ with main_col:
         ),
         (
             "Forecast and Reporting",
-            "Combine environmental trends with reports for clients, operations, and risk planning.",
+            "Combine environmental trends with reports for clients, operations, ESG planning, and stakeholder reviews.",
             "Reporting",
         ),
     ]

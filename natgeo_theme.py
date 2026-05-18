@@ -8,18 +8,20 @@ from pathlib import Path
 import streamlit as st
 
 
-PAGE_LINKS = [
-    ("app.py", "Home"),
-    ("pages/1_Overview.py", "Overview"),
-    ("pages/2_AI_Prediction.py", "Predict AQI"),
-    ("pages/3_Map_AI_Prediction.py", "Map"),
-    ("pages/6_Business_Impact.py", "Business AI"),
-    ("pages/4_Time_Series_Forecast.py", "Forecast"),
-    ("pages/5_Model_Analytics.py", "Analytics"),
-    ("pages/7_Generate_Report.py", "Report"),
-    ("pages/8_Ocean_Ice_Threat.py", "Ocean + Ice"),
-    ("pages/9_Water_Pollution_Prediction.py", "Water AI"),
+PAGES = [
+    {"path": "app.py", "label": "Home", "route": "/"},
+    {"path": "pages/1_Overview.py", "label": "Overview", "route": "/Overview"},
+    {"path": "pages/2_AI_Prediction.py", "label": "Predict AQI", "route": "/AI_Prediction"},
+    {"path": "pages/3_Map_AI_Prediction.py", "label": "Map", "route": "/Map_AI_Prediction"},
+    {"path": "pages/4_Time_Series_Forecast.py", "label": "Forecast", "route": "/Time_Series_Forecast"},
+    {"path": "pages/5_Model_Analytics.py", "label": "Analytics", "route": "/Model_Analytics"},
+    {"path": "pages/6_Business_Impact.py", "label": "Business AI", "route": "/Business_Impact"},
+    {"path": "pages/7_Generate_Report.py", "label": "Report", "route": "/Generate_Report"},
+    {"path": "pages/8_Ocean_Ice_Threat.py", "label": "Ocean + Ice", "route": "/Ocean_Ice_Threat"},
+    {"path": "pages/9_Water_Pollution_Prediction.py", "label": "Water AI", "route": "/Water_Pollution_Prediction"},
 ]
+
+PRIMARY_NAV_LABELS = {"Home", "Predict AQI", "Map", "Business AI", "Water AI", "Report"}
 
 
 def _image_src(image: str) -> str:
@@ -35,18 +37,21 @@ def inject_natgeo_theme() -> None:
     st.markdown(
         """
         <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
         :root {
-            --ie-ink: #10231a;
-            --ie-muted: #62756a;
+            --ie-ink: #0d1f1a;
+            --ie-muted: #657a72;
             --ie-green: #0f5132;
-            --ie-green-2: #1f7a4d;
-            --ie-teal: #0e7490;
-            --ie-mint: #e6f7ed;
-            --ie-mist: #f5fbf7;
-            --ie-line: #cfe6d7;
+            --ie-green-2: #166534;
+            --ie-teal: #0b7285;
+            --ie-cyan: #0ea5b7;
+            --ie-mint: #e9f9ef;
+            --ie-mist: #f3fbf7;
+            --ie-line: #cfe7d8;
             --ie-white: #ffffff;
-            --ie-warn: #b45309;
-            --ie-danger: #b91c1c;
+            --ie-shadow: 0 18px 44px rgba(14, 61, 45, 0.09);
+            --ie-shadow-strong: 0 26px 60px rgba(10, 43, 34, 0.14);
         }
 
         html {
@@ -55,10 +60,11 @@ def inject_natgeo_theme() -> None:
 
         body {
             background:
-                radial-gradient(circle at top left, rgba(31, 122, 77, 0.12), transparent 28rem),
-                linear-gradient(180deg, #ffffff 0%, #f5fbf7 54%, #ffffff 100%);
+                radial-gradient(circle at top left, rgba(15, 81, 50, 0.12), transparent 28rem),
+                radial-gradient(circle at top right, rgba(14, 116, 144, 0.10), transparent 26rem),
+                linear-gradient(180deg, #f9fcfb 0%, #f2faf7 52%, #fbfefd 100%);
             color: var(--ie-ink);
-            font-family: Georgia, "Times New Roman", serif;
+            font-family: "Inter", system-ui, sans-serif;
         }
 
         #MainMenu,
@@ -86,87 +92,112 @@ def inject_natgeo_theme() -> None:
 
         .block-container {
             max-width: 1240px;
-            padding-top: 1rem;
+            padding-top: 1.1rem;
             padding-bottom: 2.2rem;
         }
 
-        [data-testid="stSidebar"] {
-            display: none;
-        }
-
+        [data-testid="stSidebar"],
         [data-testid="stSidebarNav"] {
             display: none;
         }
 
         .ie-topbar {
-            align-items: center;
-            background: rgba(255, 255, 255, 0.96);
-            border: 1px solid var(--ie-line);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(207, 231, 216, 0.95);
             border-radius: 8px;
-            box-shadow: 0 14px 34px rgba(15, 81, 50, 0.08);
-            display: grid;
-            gap: 0.85rem;
-            grid-template-columns: minmax(210px, 315px) minmax(0, 1fr);
-            margin-bottom: 0.75rem;
-            padding: 0.82rem 0.9rem;
+            box-shadow: var(--ie-shadow);
+            margin-bottom: 1rem;
+            padding: 0.95rem 1rem;
             position: sticky;
             top: 0.65rem;
             z-index: 20;
+            backdrop-filter: blur(14px);
+        }
+
+        .ie-topbar-main {
+            align-items: center;
+            display: grid;
+            gap: 0.9rem;
+            grid-template-columns: minmax(230px, 320px) minmax(0, 1fr);
         }
 
         .ie-brand {
             align-items: center;
             display: flex;
-            gap: 0.7rem;
+            gap: 0.82rem;
             min-width: 0;
         }
 
         .ie-logo {
             align-items: center;
-            background: linear-gradient(135deg, var(--ie-green), var(--ie-teal));
+            background: linear-gradient(145deg, #0f5132, #0ea5b7);
             border-radius: 8px;
+            box-shadow: 0 18px 34px rgba(11, 114, 133, 0.18);
             color: #ffffff;
             display: flex;
             flex: 0 0 auto;
-            font-size: 0.78rem;
+            font-size: 0.92rem;
             font-weight: 900;
-            height: 42px;
+            height: 52px;
             justify-content: center;
-            width: 58px;
+            position: relative;
+            width: 62px;
+        }
+
+        .ie-logo::after {
+            content: "";
+            position: absolute;
+            inset: 7px;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            border-radius: 8px;
+        }
+
+        .ie-brand-copy {
+            min-width: 0;
+        }
+
+        .ie-brand-kicker {
+            color: var(--ie-teal);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
         }
 
         .ie-brand-title {
-            color: var(--ie-green);
-            font-size: 1.02rem;
+            color: var(--ie-ink);
+            font-size: 1.22rem;
             font-weight: 900;
-            line-height: 1.05;
+            line-height: 1.1;
+            margin-top: 0.18rem;
             text-transform: uppercase;
         }
 
         .ie-brand-subtitle {
             color: var(--ie-muted);
-            font-size: 0.76rem;
-            font-weight: 700;
-            margin-top: 0.12rem;
+            font-size: 0.79rem;
+            font-weight: 600;
+            line-height: 1.45;
+            margin-top: 0.18rem;
         }
 
         .ie-nav {
             align-items: center;
             display: flex;
             flex-wrap: wrap;
-            gap: 0.42rem;
+            gap: 0.46rem;
             justify-content: flex-end;
             min-width: 0;
         }
 
         .ie-nav a,
         .ie-nav span {
-            border-radius: 8px;
+            border-radius: 999px;
             display: inline-flex;
-            font-size: 0.72rem;
-            font-weight: 900;
+            font-size: 0.73rem;
+            font-weight: 800;
             line-height: 1;
-            padding: 0.52rem 0.58rem;
+            padding: 0.6rem 0.82rem;
             text-decoration: none;
             text-transform: uppercase;
             white-space: nowrap;
@@ -178,49 +209,73 @@ def inject_natgeo_theme() -> None:
         }
 
         .ie-nav a {
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.9);
             border: 1px solid var(--ie-line);
             color: var(--ie-ink);
         }
 
         .ie-nav .ie-nav-primary {
-            background: var(--ie-green);
-            border-color: var(--ie-green);
+            background: linear-gradient(135deg, var(--ie-green), var(--ie-teal));
+            border-color: transparent;
             color: #ffffff;
+            box-shadow: 0 14px 28px rgba(11, 114, 133, 0.15);
         }
 
-        .ie-linkbar {
-            background: #ffffff;
-            border: 1px solid var(--ie-line);
-            border-radius: 8px;
-            box-shadow: 0 10px 24px rgba(15, 81, 50, 0.07);
-            margin: 0 0 1rem 0;
-            padding: 0.45rem;
+        .ie-flowbar {
+            align-items: center;
+            border-top: 1px solid rgba(207, 231, 216, 0.9);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.48rem;
+            margin-top: 0.9rem;
+            padding-top: 0.9rem;
         }
 
-        .ie-linkbar [data-testid="stHorizontalBlock"] {
-            gap: 0.35rem;
-            margin-bottom: 0.35rem;
-        }
-
-        .ie-linkbar [data-testid="stPageLink"] {
-            border-radius: 8px;
-            font-size: 0.82rem;
+        .ie-flowbar-label {
+            color: var(--ie-muted);
+            font-size: 0.72rem;
             font-weight: 800;
+            letter-spacing: 0.18em;
+            margin-right: 0.2rem;
+            text-transform: uppercase;
+        }
+
+        .ie-flowbar a,
+        .ie-flowbar span {
+            border-radius: 999px;
+            display: inline-flex;
+            font-size: 0.75rem;
+            font-weight: 700;
+            line-height: 1;
+            padding: 0.55rem 0.8rem;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .ie-flowbar a {
+            background: #ffffff;
+            border: 1px solid rgba(207, 231, 216, 0.95);
+            color: var(--ie-muted);
+        }
+
+        .ie-flowbar span {
+            background: linear-gradient(135deg, var(--ie-mint), #f4fcf7);
+            border: 1px solid rgba(180, 230, 201, 0.95);
+            color: var(--ie-green);
         }
 
         .ie-hero {
             background-position: center;
             background-size: cover;
             border-radius: 8px;
-            box-shadow: 0 24px 52px rgba(15, 81, 50, 0.18);
-            min-height: 465px;
+            box-shadow: var(--ie-shadow-strong);
+            min-height: 470px;
             overflow: hidden;
             position: relative;
         }
 
         .ie-hero::before {
-            background: linear-gradient(90deg, rgba(15, 81, 50, 0.92), rgba(14, 116, 144, 0.68), rgba(15, 81, 50, 0.10));
+            background: linear-gradient(94deg, rgba(10, 49, 36, 0.93), rgba(11, 114, 133, 0.66), rgba(10, 49, 36, 0.16));
             content: "";
             inset: 0;
             position: absolute;
@@ -228,8 +283,8 @@ def inject_natgeo_theme() -> None:
 
         .ie-hero-body {
             color: #ffffff;
-            max-width: 780px;
-            padding: 5.1rem 2.7rem 2.6rem 2.7rem;
+            max-width: 790px;
+            padding: 4.7rem 2.4rem 2.5rem 2.4rem;
             position: relative;
             z-index: 1;
         }
@@ -237,52 +292,52 @@ def inject_natgeo_theme() -> None:
         .ie-kicker,
         .ie-card-kicker,
         .ie-section-kicker {
-            color: #bff5d2;
-            font-size: 0.8rem;
-            font-weight: 900;
-            letter-spacing: 0.04em;
+            color: #c6f6da;
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
         }
 
         .ie-hero h1 {
             color: #ffffff;
-            font-size: 3.2rem;
+            font-size: 3.25rem;
             font-weight: 900;
-            line-height: 1.03;
-            margin: 0.68rem 0 0.9rem 0;
+            line-height: 1.02;
+            margin: 0.82rem 0 1rem 0;
             max-width: 780px;
         }
 
         .ie-hero p {
-            color: #eefaf2;
-            font-size: 1.05rem;
-            line-height: 1.68;
+            color: rgba(255, 255, 255, 0.93);
+            font-size: 1.03rem;
+            line-height: 1.74;
             margin: 0;
-            max-width: 700px;
+            max-width: 720px;
         }
 
         .ie-hero-meta {
-            background: rgba(255, 255, 255, 0.16);
-            border: 1px solid rgba(255, 255, 255, 0.34);
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 999px;
             color: #ffffff;
             display: inline-block;
-            font-size: 0.78rem;
-            font-weight: 900;
-            margin-top: 1.1rem;
-            padding: 0.62rem 0.78rem;
+            font-size: 0.76rem;
+            font-weight: 800;
+            margin-top: 1.15rem;
+            padding: 0.66rem 0.92rem;
             text-transform: uppercase;
         }
 
         .ie-section {
-            margin-top: 1.55rem;
+            margin-top: 1.6rem;
         }
 
         .ie-section-head {
             align-items: end;
             display: grid;
             gap: 1rem;
-            grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+            grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
             margin-bottom: 1rem;
         }
 
@@ -290,14 +345,14 @@ def inject_natgeo_theme() -> None:
             color: var(--ie-ink);
             font-size: 2rem;
             font-weight: 900;
-            line-height: 1.14;
-            margin: 0.3rem 0 0 0;
+            line-height: 1.12;
+            margin: 0.28rem 0 0 0;
         }
 
         .ie-section-copy {
             color: var(--ie-muted);
             font-size: 0.98rem;
-            line-height: 1.62;
+            line-height: 1.7;
             margin: 0;
         }
 
@@ -307,31 +362,31 @@ def inject_natgeo_theme() -> None:
         .ie-panel,
         .kpi-card,
         div[data-testid="stMetric"] {
-            background: #ffffff;
-            border: 1px solid var(--ie-line);
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid rgba(207, 231, 216, 0.95);
             border-radius: 8px;
-            box-shadow: 0 12px 30px rgba(15, 81, 50, 0.08);
+            box-shadow: var(--ie-shadow);
             overflow: hidden;
         }
 
         .ie-card,
         .ie-panel,
         .kpi-card {
-            padding: 1rem;
+            padding: 1.02rem;
         }
 
         .ie-card,
         .kpi-card,
         .ie-metric-card {
-            border-top: 5px solid var(--ie-green);
+            border-top: 5px solid rgba(15, 81, 50, 0.92);
         }
 
         .ie-card h3,
         .ie-panel h3,
         .ie-photo-title {
             color: var(--ie-ink);
-            font-size: 1.12rem;
-            font-weight: 900;
+            font-size: 1.08rem;
+            font-weight: 800;
             line-height: 1.34;
             margin: 0.42rem 0;
         }
@@ -340,7 +395,7 @@ def inject_natgeo_theme() -> None:
         .ie-panel p,
         .ie-photo-copy {
             color: var(--ie-muted);
-            line-height: 1.55;
+            line-height: 1.6;
             margin: 0.35rem 0 0 0;
         }
 
@@ -349,14 +404,15 @@ def inject_natgeo_theme() -> None:
         }
 
         .ie-status {
-            background: linear-gradient(135deg, #ffffff 0%, var(--ie-mint) 100%);
-            border: 1px solid var(--ie-line);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, var(--ie-mint) 100%);
+            border: 1px solid rgba(207, 231, 216, 0.95);
             border-left: 6px solid var(--ie-teal);
             border-radius: 8px;
             color: var(--ie-ink);
-            font-weight: 800;
+            font-size: 0.95rem;
+            font-weight: 700;
             margin: 1rem 0 0 0;
-            padding: 0.9rem 1rem;
+            padding: 0.92rem 1rem;
         }
 
         .ie-photo {
@@ -377,52 +433,66 @@ def inject_natgeo_theme() -> None:
         .ie-metric-label,
         div[data-testid="stMetricLabel"] {
             color: var(--ie-muted);
-            font-size: 0.8rem;
-            font-weight: 900;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
         }
 
         .ie-metric-value,
         div[data-testid="stMetricValue"] {
             color: var(--ie-green);
-            font-size: 1.7rem;
+            font-size: 1.78rem;
             font-weight: 900;
-            margin-top: 0.24rem;
+            margin-top: 0.28rem;
         }
 
         div[data-testid="stMetric"] {
-            padding: 0.9rem;
+            padding: 0.95rem;
+        }
+
+        div[data-testid="stMetric"] > div {
+            color: var(--ie-muted);
         }
 
         .stButton > button,
         .stDownloadButton > button {
-            background: var(--ie-green);
-            border: 1px solid var(--ie-green);
+            background: linear-gradient(135deg, var(--ie-green), var(--ie-teal));
+            border: 1px solid transparent;
             border-radius: 8px;
+            box-shadow: 0 14px 26px rgba(11, 114, 133, 0.16);
             color: #ffffff;
-            font-weight: 900;
-            min-height: 2.75rem;
+            font-weight: 800;
+            min-height: 2.8rem;
             text-transform: uppercase;
             width: 100%;
         }
 
         .stButton > button:hover,
         .stDownloadButton > button:hover {
-            background: var(--ie-green-2);
-            border-color: var(--ie-green-2);
+            background: linear-gradient(135deg, var(--ie-green-2), var(--ie-cyan));
             color: #ffffff;
         }
 
         .stSelectbox [data-baseweb="select"] > div,
         .stNumberInput input,
         .stTextInput input,
+        .stTextArea textarea,
         div[data-testid="stSlider"] {
             border-radius: 8px;
         }
 
+        .stSelectbox [data-baseweb="select"] > div,
+        .stNumberInput input,
+        .stTextInput input,
+        .stTextArea textarea {
+            border: 1px solid rgba(207, 231, 216, 0.95);
+            box-shadow: var(--ie-shadow);
+        }
+
         div[data-testid="stSlider"] {
-            background: #ffffff;
-            border: 1px solid var(--ie-line);
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid rgba(207, 231, 216, 0.95);
             padding: 0.8rem 0.9rem;
         }
 
@@ -431,31 +501,32 @@ def inject_natgeo_theme() -> None:
         }
 
         .ie-footer {
-            background: var(--ie-green);
+            background: linear-gradient(135deg, #10382b 0%, #0e5f4e 50%, #0b7285 100%);
             border-radius: 8px;
+            box-shadow: var(--ie-shadow-strong);
             color: #ffffff;
-            margin-top: 1.8rem;
-            padding: 1.35rem;
+            margin-top: 1.9rem;
+            padding: 1.4rem;
         }
 
         .ie-footer-grid {
             display: grid;
             gap: 1.2rem;
-            grid-template-columns: 1.3fr 1fr 1fr;
+            grid-template-columns: 1.25fr 1fr 1fr;
         }
 
         .ie-footer h3,
         .ie-footer h4 {
             color: #ffffff;
-            font-weight: 900;
+            font-weight: 800;
             margin: 0 0 0.55rem 0;
         }
 
         .ie-footer p,
         .ie-footer a,
         .ie-footer li {
-            color: #e9f8ee;
-            line-height: 1.6;
+            color: rgba(233, 248, 238, 0.95);
+            line-height: 1.62;
         }
 
         .ie-footer ul {
@@ -470,19 +541,19 @@ def inject_natgeo_theme() -> None:
 
         .ie-footer-note {
             border-top: 1px solid rgba(255, 255, 255, 0.22);
-            color: #e9f8ee;
+            color: rgba(233, 248, 238, 0.95);
             font-size: 0.86rem;
             margin-top: 1rem;
             padding-top: 0.85rem;
         }
 
-        @media (max-width: 980px) {
-            .ie-topbar,
+        @media (max-width: 1080px) {
+            .ie-topbar-main,
             .ie-section-head,
             .ie-footer-grid {
-                align-items: flex-start;
                 display: flex;
                 flex-direction: column;
+                align-items: flex-start;
             }
 
             .ie-nav {
@@ -492,31 +563,41 @@ def inject_natgeo_theme() -> None:
         }
 
         @media (max-width: 720px) {
+            .block-container {
+                padding-top: 0.85rem;
+            }
+
+            .ie-topbar {
+                padding: 0.82rem;
+            }
+
             .ie-logo {
-                height: 34px;
-                width: 48px;
+                height: 44px;
+                width: 52px;
             }
 
             .ie-brand-title {
-                font-size: 0.9rem;
+                font-size: 1.02rem;
             }
 
             .ie-nav a,
-            .ie-nav span {
+            .ie-nav span,
+            .ie-flowbar a,
+            .ie-flowbar span {
                 font-size: 0.68rem;
-                padding: 0.45rem 0.48rem;
+                padding: 0.5rem 0.68rem;
             }
 
             .ie-hero {
-                min-height: 410px;
+                min-height: 400px;
             }
 
             .ie-hero-body {
-                padding: 3.3rem 1.25rem 1.8rem 1.25rem;
+                padding: 3.2rem 1.2rem 1.8rem 1.2rem;
             }
 
             .ie-hero h1 {
-                font-size: 2.2rem;
+                font-size: 2.18rem;
             }
         }
         </style>
@@ -526,24 +607,40 @@ def inject_natgeo_theme() -> None:
 
 
 def render_topbar(active: str = "Environment") -> None:
+    primary_links = []
+    workflow_links = []
+    for page in PAGES:
+        href = page["route"]
+        label = str(page["label"])
+        if label == active:
+            workflow_links.append(f"<span>{escape(label)}</span>")
+        else:
+            workflow_links.append(f'<a href="{escape(href)}" target="_self">{escape(label)}</a>')
+
+        if label in PRIMARY_NAV_LABELS and label != active:
+            primary_class = ' class="ie-nav-primary"' if label == "Business AI" else ""
+            primary_links.append(f'<a{primary_class} href="{escape(href)}" target="_self">{escape(label)}</a>')
+
     st.markdown(
         f"""
         <div class="ie-topbar">
-            <div class="ie-brand">
-                <div class="ie-logo">IE</div>
-                <div>
-                    <div class="ie-brand-title">IEIRAS Impact</div>
-                    <div class="ie-brand-subtitle">Environmental intelligence dashboard</div>
+            <div class="ie-topbar-main">
+                <div class="ie-brand">
+                    <div class="ie-logo">IE</div>
+                    <div class="ie-brand-copy">
+                        <div class="ie-brand-kicker">Environmental AI Suite</div>
+                        <div class="ie-brand-title">IEIRAS Impact</div>
+                        <div class="ie-brand-subtitle">Professional climate, AQI, business risk, map, and water intelligence dashboard</div>
+                    </div>
+                </div>
+                <div class="ie-nav">
+                    <span>{escape(active)}</span>
+                    {''.join(primary_links)}
                 </div>
             </div>
-            <div class="ie-nav">
-                <span>{escape(active)}</span>
-                <a href="/" target="_self">Home</a>
-                <a href="/AI_Prediction" target="_self">Predict AQI</a>
-                <a href="/Map_AI_Prediction" target="_self">Map</a>
-                <a class="ie-nav-primary" href="/Business_Impact" target="_self">Business AI</a>
-                <a href="/Water_Pollution_Prediction" target="_self">Water AI</a>
-                <a href="/Generate_Report" target="_self">Report</a>
+            <div class="ie-flowbar">
+                <div class="ie-flowbar-label">Connected Pages</div>
+                {''.join(workflow_links)}
             </div>
         </div>
         """,
@@ -554,12 +651,13 @@ def render_topbar(active: str = "Environment") -> None:
 def render_page_links() -> None:
     st.markdown('<div class="ie-linkbar">', unsafe_allow_html=True)
     max_per_row = 5
-    for start in range(0, len(PAGE_LINKS), max_per_row):
-        row = PAGE_LINKS[start : start + max_per_row]
+    page_links = [(page["path"], page["label"]) for page in PAGES]
+    for start in range(0, len(page_links), max_per_row):
+        row = page_links[start : start + max_per_row]
         columns = st.columns(len(row))
-        for column, (page, label) in zip(columns, row):
+        for column, (page_path, label) in zip(columns, row):
             with column:
-                st.page_link(page, label=label)
+                st.page_link(page_path, label=label)
     st.markdown("</div>", unsafe_allow_html=True)
 
 
@@ -571,7 +669,7 @@ def render_cta_links() -> None:
     with c2:
         st.page_link("pages/3_Map_AI_Prediction.py", label="Open Map")
     with c3:
-        st.page_link("pages/7_Generate_Report.py", label="Generate Report")
+        st.page_link("pages/6_Business_Impact.py", label="Open Business AI")
     st.markdown("</div>", unsafe_allow_html=True)
 
 
@@ -671,7 +769,7 @@ def render_panel(title: str, body: str) -> None:
 
 def render_trust_note() -> None:
     render_status(
-        "IEIRAS combines environmental prediction, mapping, forecasting, explainability, reporting, ocean risk, and river water intelligence in one workflow."
+        "IEIRAS connects AQI prediction, rainfall forecasting, map intelligence, business impact scoring, reporting, ocean risk, and river water analytics in one workflow."
     )
 
 
@@ -684,8 +782,8 @@ def render_footer() -> None:
                     <h3>IEIRAS Impact</h3>
                     <p>
                         Intelligent Environmental Risk and Analytics System for AQI prediction,
-                        rainfall monitoring, map intelligence, ocean risk, water pollution AI,
-                        explainability, and report generation.
+                        rainfall monitoring, business impact scoring, map intelligence, ocean risk,
+                        water pollution AI, and report generation.
                     </p>
                 </div>
                 <div>
@@ -695,16 +793,16 @@ def render_footer() -> None:
                         <li><a href="/AI_Prediction" target="_self">Predict AQI</a></li>
                         <li><a href="/Map_AI_Prediction" target="_self">Map Intelligence</a></li>
                         <li><a href="/Business_Impact" target="_self">Business AI</a></li>
-                        <li><a href="/Water_Pollution_Prediction" target="_self">Water AI</a></li>
+                        <li><a href="/Generate_Report" target="_self">Report</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4>Credits</h4>
-                    <p>Developed by Alok Singh<br>MSc AI and Data Science</p>
+                    <h4>Project Identity</h4>
+                    <p>Developed by Alok Singh<br />MSc AI and Data Science<br />Environmental Intelligence Platform</p>
                 </div>
             </div>
             <div class="ie-footer-note">
-                Academic environmental intelligence dashboard for demonstration and decision-support use.
+                Professional environmental dashboard for demonstration, planning, and early decision-support use.
             </div>
         </div>
         """,
