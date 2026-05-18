@@ -13,9 +13,9 @@ PAGE_LINKS = [
     ("pages/1_Overview.py", "Overview"),
     ("pages/2_AI_Prediction.py", "Predict AQI"),
     ("pages/3_Map_AI_Prediction.py", "Map"),
+    ("pages/6_Business_Impact.py", "Business AI"),
     ("pages/4_Time_Series_Forecast.py", "Forecast"),
     ("pages/5_Model_Analytics.py", "Analytics"),
-    ("pages/6_SHAP_Explainability.py", "Safety"),
     ("pages/7_Generate_Report.py", "Report"),
     ("pages/8_Ocean_Ice_Threat.py", "Ocean + Ice"),
     ("pages/9_Water_Pollution_Prediction.py", "Water AI"),
@@ -91,12 +91,11 @@ def inject_natgeo_theme() -> None:
         }
 
         [data-testid="stSidebar"] {
-            background: var(--ie-green);
-            border-right: 4px solid var(--ie-teal);
+            display: none;
         }
 
-        [data-testid="stSidebar"] * {
-            color: #ffffff;
+        [data-testid="stSidebarNav"] {
+            display: none;
         }
 
         .ie-topbar {
@@ -542,14 +541,14 @@ def render_topbar(active: str = "Environment") -> None:
                 <a href="/" target="_self">Home</a>
                 <a href="/AI_Prediction" target="_self">Predict AQI</a>
                 <a href="/Map_AI_Prediction" target="_self">Map</a>
+                <a class="ie-nav-primary" href="/Business_Impact" target="_self">Business AI</a>
                 <a href="/Water_Pollution_Prediction" target="_self">Water AI</a>
-                <a class="ie-nav-primary" href="/Generate_Report" target="_self">Report</a>
+                <a href="/Generate_Report" target="_self">Report</a>
             </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
-    render_page_links()
 
 
 def render_page_links() -> None:
@@ -695,6 +694,7 @@ def render_footer() -> None:
                         <li><a href="/Overview" target="_self">Overview</a></li>
                         <li><a href="/AI_Prediction" target="_self">Predict AQI</a></li>
                         <li><a href="/Map_AI_Prediction" target="_self">Map Intelligence</a></li>
+                        <li><a href="/Business_Impact" target="_self">Business AI</a></li>
                         <li><a href="/Water_Pollution_Prediction" target="_self">Water AI</a></li>
                     </ul>
                 </div>

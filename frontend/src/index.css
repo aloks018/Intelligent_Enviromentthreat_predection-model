@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-white/10;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-mesh-light text-slate-900 font-sans antialiased transition-colors duration-300 dark:bg-mesh-dark dark:text-slate-50;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    @apply bg-brand-400/40 text-slate-950;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply rounded-3xl border border-white/40 bg-white/55 shadow-panel backdrop-blur-xl dark:border-white/10 dark:bg-white/8;
+  }
+
+  .glass-pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-white/50 bg-white/70 px-4 py-2 text-sm font-medium text-slate-700 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/10 dark:text-slate-200;
+  }
+
+  .section-shell {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+}
+
+.grid-ambient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: radial-gradient(circle at center, black, transparent 78%);
+  pointer-events: none;
+}
+
+.chart-tooltip {
+  background: rgba(6, 19, 23, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 16px;
+  color: #e2e8f0;
+  padding: 10px 12px;
+  box-shadow: 0 18px 40px rgba(2, 12, 17, 0.28);
+}
